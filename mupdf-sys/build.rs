@@ -444,6 +444,12 @@ impl Build {
             self.define_bool(font, true);
         }
 
+        if !cfg!(feature = "sys-lib-libjpeg") {
+            // Rename bundled libjpeg symbols to FZjpeg_* (scripts/libjpeg/jconfig.h)
+            // so they cannot clash with another libjpeg (e.g. skia's turbo) in one binary.
+            self.define_bool("FZ_HIDE_INTERNAL_JPEG", true);
+        }
+
         if !cfg!(feature = "base14-fonts") {
             // Skip the URW base14 fonts too (warning: makes plain PDFs render
             // without text unless replacement fonts are provided at runtime,
