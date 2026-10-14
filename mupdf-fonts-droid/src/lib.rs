@@ -38,7 +38,8 @@ pub fn find_by_name(name: &str, bold: bool, italic: bool) -> Option<Font> {
 }
 
 pub fn cjk_font(_ordering: i32, _serif: bool) -> Option<Font> {
-    Some(DROID_SANS_FALLBACK_FULL)
+    // Same CJK fallback as the PyMuPDF wheel (Droid Sans Fallback, 3,556,308 bytes).
+    Some(DROID_SANS_FALLBACK)
 }
 
 fn eq_font_name(a: &str, b: &str) -> bool {

@@ -753,6 +753,11 @@ impl PdfDocument {
         self.has_unsaved_changes()
     }
 
+    /// `pdf_was_repaired` (does not throw: it reads `doc->repair_attempted`).
+    pub fn was_repaired(&self) -> bool {
+        unsafe { pdf_was_repaired(context(), self.inner) != 0 }
+    }
+
     pub fn can_be_saved_incrementally(&self) -> bool {
         unsafe { pdf_can_be_saved_incrementally(context(), self.inner) != 0 }
     }

@@ -598,6 +598,11 @@ impl TextLine<'_> {
         (self.inner.wmode as u32).try_into().unwrap()
     }
 
+    /// Normalised baseline direction (`fz_stext_line.dir`).
+    pub fn dir(&self) -> Point {
+        self.inner.dir.into()
+    }
+
     pub fn chars(&self) -> TextCharIter<'_> {
         TextCharIter {
             next: self.inner.first_char,
@@ -635,6 +640,16 @@ pub struct TextChar<'a> {
 impl TextChar<'_> {
     pub fn char(&self) -> Option<char> {
         std::char::from_u32(self.inner.c as u32)
+    }
+
+    /// Raw character code (`fz_stext_char.c`), even when it is not a valid `char`.
+    pub fn raw_c(&self) -> i32 {
+        self.inner.c
+    }
+
+    /// Raw `fz_stext_char.flags`, including bits `TextCharFlags` does not name.
+    pub fn raw_flags(&self) -> u16 {
+        self.inner.flags
     }
 
     pub fn origin(&self) -> Point {
