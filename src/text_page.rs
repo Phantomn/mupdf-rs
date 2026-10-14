@@ -132,6 +132,14 @@ pub struct TextPage {
 unsafe_impl_ffi_wrapper!(TextPage, fz_stext_page, fz_drop_stext_page);
 
 impl TextPage {
+    /// Creates an empty structured-text page with the given mediabox (`fz_new_stext_page`), to be
+    /// filled by a [`Device::from_text_page`](crate::Device::from_text_page) device run over a page
+    /// (`fz_run_page` includes annotations, unlike [`Page::to_text_page`](crate::Page::to_text_page)).
+    pub fn new(mediabox: Rect) -> Result<Self, Error> {
+        let inner = unsafe { ffi_try!(mupdf_new_stext_page(context(), mediabox.into())) }?;
+        Ok(Self { inner: crate::non_null(inner)? })
+    }
+
     pub fn to_html(&self, id: i32, full: bool) -> Result<String, Error> {
         let mut buf = Buffer::with_capacity(8192)?;
 

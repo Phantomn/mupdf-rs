@@ -6,6 +6,12 @@ fz_text *mupdf_new_text(fz_context *ctx, mupdf_error_t **errptr)
     TRY_CATCH(fz_text*, NULL, fz_new_text(ctx));
 }
 
+/* StextPage */
+fz_stext_page *mupdf_new_stext_page(fz_context *ctx, fz_rect mediabox, mupdf_error_t **errptr)
+{
+    TRY_CATCH(fz_stext_page*, NULL, fz_new_stext_page(ctx, mediabox));
+}
+
 /* StrokeState */
 fz_stroke_state *mupdf_default_stroke_state(fz_context *ctx)
 {
