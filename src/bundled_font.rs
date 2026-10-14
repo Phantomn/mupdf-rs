@@ -18,8 +18,10 @@ impl FontLoader for BundledFontLoader {
         find_by_name(name, hints.bold, hints.italic, hints.needs_exact_metrics).and_then(load_font)
     }
 
-    fn load_cjk_font(&self, _name: &str, ordering: CjkFontOrdering, serif: bool) -> Option<Font> {
-        find_cjk_font(ordering as c_int, serif).and_then(load_font)
+    fn load_cjk_font(&self, name: &str, ordering: CjkFontOrdering, serif: bool) -> Option<Font> {
+        // Like MuPDF's builtin CJK substitute (pdf_load_substitute_cjk_font), the font keeps the
+        // requested PDF font name.
+        find_cjk_font(ordering as c_int, serif).and_then(|f| load_font_named(f, name))
     }
 
     fn load_fallback_font(&self, script: u32, language: u32, hints: FontHints) -> Option<Font> {
@@ -146,8 +148,12 @@ fn find_fallback_font(script: c_int, language: c_int, serif: bool) -> Option<Fon
 }
 
 pub(crate) fn load_font(font: FontData) -> Option<Font> {
+    load_font_named(font, font.name)
+}
+
+fn load_font_named(font: FontData, name: &str) -> Option<Font> {
     let len = c_int::try_from(font.data.len()).ok()?;
-    let name = std::ffi::CString::new(font.name).ok()?;
+    let name = std::ffi::CString::new(name).ok()?;
     let ctx = context();
 
     let mut err: *mut mupdf_error_t = ptr::null_mut();
